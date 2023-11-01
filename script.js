@@ -5,12 +5,14 @@ let operation;
 let x;
 let y;
 let operationUsed = false;
+let lastElement = null;
+let lastElementIsZero = false;
 const operBtns = [".plus", ".minus", ".multiply", ".divide"];
-const display = document.querySelector(".display-text");
 const digitBtns = document.querySelectorAll(".digit");
+const display = document.querySelector(".display-text");
 const equalsBtn = document.querySelector(".equals");
 const clearBtn = document.querySelector(".clear");
-const op = {
+const operSymbolToString = {
   "+": "plus",
   "-": "subtract",
   "*": "multiply",
@@ -20,18 +22,39 @@ const op = {
 digitBtns.forEach((element) =>
   element.addEventListener("click", (e) => {
     let input = e.target.textContent;
+    // let input;
 
-    // if there's already value e.g "85 +"
+    // if there's already a value e.g "85 +"
+    // console.log(e.target.textContent);
+    // console.log(typeof Number("a"));
+    // if (input === "0") {
+    //   if (typeof lastElement == "number") {
+    //     //   input = 0;
+    //     //   console.log("asdasdasd");
+    //     // } else {
+    //     input = "";
+    //   }
+    // }
     if (displayText) {
+      if (lastElementIsZero) {
+        displayText = displayText.substring(0, displayText.length - 1);
+      }
       displayText = `${displayText}${input}`;
     } else {
       if (input == 0) {
+        // console.log(displayText);
         displayText = "";
       } else {
         displayText = `${input}`;
       }
+      // if (input == 0) {
+      //   displayText = "";
+      // } else {
+      // }
     }
 
+    if (input == 0) lastElementIsZero = true;
+    // lastElement = input;
     display.textContent = displayText;
   })
 );
@@ -40,7 +63,7 @@ digitBtns.forEach((element) =>
 operBtns.forEach((element) => {
   let btn = document.querySelector(element);
   btn.addEventListener("click", (e) => {
-    let input = e.target.textContent;
+    operation = e.target.textContent;
     // if there's X this means we already have two values, and need to solve
     if (x) {
       solve();
@@ -53,10 +76,13 @@ operBtns.forEach((element) => {
         displayText = displayText.substring(0, displayText.length - 1);
       }
       operationUsed = true;
-      operation = input;
+      // operation = input;
 
-      displayText = `${x}${input}`;
+      displayText = `${x}${operation}`;
       display.textContent = displayText;
+
+      // lastElement = String(operation);
+      lastElementIsZero = false;
     }
   });
 });
@@ -70,21 +96,16 @@ equalsBtn.addEventListener("click", (e) => {
 clearBtn.addEventListener("click", (e) => {
   displayText = "";
   display.textContent = displayText;
-  x = null;
-  y = null;
-  operation = null;
+  reset();
 });
 
 const solve = function () {
   y = Number(displayText.replace(`${x}${operation}`, ""));
 
-  displayText = String(operate(x, y, op[operation]));
-  display.textContent = displayText;
-
-  operationUsed = false;
-  x = null;
-  y = null;
-  operation = null;
+  let result = operate(x, y, operSymbolToString[operation]);
+  display.textContent = String(result);
+  // lastElement = result;
+  reset();
 };
 
 function add(x, y) {
@@ -112,4 +133,12 @@ function operate(x, y, operation) {
   else if (operation === "divide") result = divide(x, y);
 
   return result;
+}
+
+function reset() {
+  x = null;
+  y = null;
+  operation = null;
+  operationUsed = false;
+  // lastElement = null;
 }
