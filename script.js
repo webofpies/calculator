@@ -7,6 +7,7 @@ let y;
 let operationUsed = false;
 let lastElement = null;
 let lastElementIsZero = false;
+let solved = false;
 const operBtns = [".plus", ".minus", ".multiply", ".divide"];
 const digitBtns = document.querySelectorAll(".digit");
 const display = document.querySelector(".display-text");
@@ -22,39 +23,23 @@ const operSymbolToString = {
 digitBtns.forEach((element) =>
   element.addEventListener("click", (e) => {
     let input = e.target.textContent;
-    // let input;
 
-    // if there's already a value e.g "85 +"
-    // console.log(e.target.textContent);
-    // console.log(typeof Number("a"));
-    // if (input === "0") {
-    //   if (typeof lastElement == "number") {
-    //     //   input = 0;
-    //     //   console.log("asdasdasd");
-    //     // } else {
-    //     input = "";
-    //   }
-    // }
-    if (displayText) {
-      if (lastElementIsZero) {
-        displayText = displayText.substring(0, displayText.length - 1);
-      }
-      displayText = `${displayText}${input}`;
-    } else {
-      if (input == 0) {
-        // console.log(displayText);
-        displayText = "";
-      } else {
-        displayText = `${input}`;
-      }
-      // if (input == 0) {
-      //   displayText = "";
-      // } else {
-      // }
+    if (solved) {
+      reset();
     }
 
-    if (input == 0) lastElementIsZero = true;
-    // lastElement = input;
+    if (operationUsed) {
+      if (y) input = `${y}${input}`;
+      y = Number(input);
+
+      displayText = `${x}${operation}${y}`;
+    } else {
+      if (x) input = `${x}${input}`;
+      x = Number(input);
+
+      displayText = x;
+    }
+
     display.textContent = displayText;
   })
 );
@@ -63,26 +48,21 @@ digitBtns.forEach((element) =>
 operBtns.forEach((element) => {
   let btn = document.querySelector(element);
   btn.addEventListener("click", (e) => {
-    operation = e.target.textContent;
     // if there's X this means we already have two values, and need to solve
-    if (x) {
-      solve();
+    if (x && y) {
+      x = solve();
+      y = null;
     }
+    // get operation after because if we have x and y present
+    // this means we already have an operation in memory
+    operation = e.target.textContent;
+
     // do not add operation symbol if no digits
     if (displayText) {
-      x = Number(displayText);
-
-      if (operationUsed) {
-        displayText = displayText.substring(0, displayText.length - 1);
-      }
       operationUsed = true;
-      // operation = input;
 
       displayText = `${x}${operation}`;
       display.textContent = displayText;
-
-      // lastElement = String(operation);
-      lastElementIsZero = false;
     }
   });
 });
@@ -100,12 +80,16 @@ clearBtn.addEventListener("click", (e) => {
 });
 
 const solve = function () {
-  y = Number(displayText.replace(`${x}${operation}`, ""));
+  // y = Number(displayText.replace(`${x}${operation}`, ""));
 
   let result = operate(x, y, operSymbolToString[operation]);
-  display.textContent = String(result);
+  // console.log(result);
+  displayText = String(result);
+  display.textContent = displayText;
+  solved = true;
   // lastElement = result;
-  reset();
+  // reset();
+  return result;
 };
 
 function add(x, y) {
@@ -141,4 +125,5 @@ function reset() {
   operation = null;
   operationUsed = false;
   // lastElement = null;
+  solved = false;
 }
