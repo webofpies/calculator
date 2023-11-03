@@ -5,60 +5,31 @@ let operation;
 let x;
 let y;
 let operationUsed = false;
-let lastElement = null;
-let lastElementIsZero = false;
+let pointUsedX = false;
+let pointUsedY = false;
+
+// let lastElement = null;
+// let lastElementIsZero = false;
 let solved = false;
-// const operBtns = [".plus", ".minus", ".multiply", ".divide"];
-// const digitBtns = document.querySelectorAll(".digit");
-// const operBtns = [
-//   document.querySelector(".plus"),
-//   document.querySelector(".minus"),
-//   document.querySelector(".multiply"),
-//   document.querySelector(".divide"),
-// ]
 
-// const operBtns = [
-//   plusBtn,
-//   minusBtn,
-//   multiplyBtn,
-//   divideBtn,
-//   percentBtn,
-//   powerBtn,
-// ];
-// const operBtns = [];
-
-// console.log(operBtns);
-
-// const operBtnsObj = {};
+const display = document.querySelector(".display-text");
 const plusBtn = document.querySelector(".plus");
 const minusBtn = document.querySelector(".minus");
 const multiplyBtn = document.querySelector(".multiply");
 const divideBtn = document.querySelector(".divide");
 const percentBtn = document.querySelector(".percent");
 const powerBtn = document.querySelector(".power");
-// operBtnsObj.plusBtn = "plus";
-// operBtnsObj.minusBtn = "minus";
-// operBtnsObj.multiplyBtn = "multiply";
-// operBtnsObj.divideBtn = "divide";
-// operBtnsObj.percentBtn = "percent";
-// operBtnsObj.powerBtn = "power";
+const equalsBtn = document.querySelector(".equals");
+const clearBtn = document.querySelector(".clear");
 
 const operBtns = [
-  { el: plusBtn, value: ["plus", "+"] },
-  { el: minusBtn, value: ["minus", "-"] },
-  { el: multiplyBtn, value: ["multiply", "*"] },
-  { el: divideBtn, value: ["divide", "/"] },
-  { el: percentBtn, value: ["percent", "%"] },
-  { el: powerBtn, value: ["power", "^"] },
+  { el: plusBtn, value: "+" },
+  { el: minusBtn, value: "-" },
+  { el: multiplyBtn, value: "*" },
+  { el: divideBtn, value: "/" },
+  { el: percentBtn, value: "%" },
+  { el: powerBtn, value: "^" },
 ];
-
-// [minusBtn]: "minus",
-// [multiplyBtn]: "multiply",
-// [divideBtn]: "divide",
-// [percentBtn]: "percent",
-// [powerBtn]: "power",
-
-// console.log(Object.entries(operBtnsObj));
 
 const digitBtns = [
   document.querySelector(".zero"),
@@ -71,23 +42,18 @@ const digitBtns = [
   document.querySelector(".seven"),
   document.querySelector(".eight"),
   document.querySelector(".nine"),
+  document.querySelector(".point"),
 ];
-const display = document.querySelector(".display-text");
-const equalsBtn = document.querySelector(".equals");
-const clearBtn = document.querySelector(".clear");
-// const operSymbolToString = {
-//   "+": "plus",
-//   "-": "subtract",
-//   "*": "multiply",
-//   "/": "divide",
-//   "%": "percent",
-//   "^": "power",
-// };
 
 // active
 const addActiveStyleDigits = function (element) {
-  element.style.cssText =
-    "background-color: #343a40; color: #f1f3f5; cursor: pointer;";
+  element.style.cssText = `
+    // background-color: #343a40; 
+    box-shadow: inset 0px 1px 3px 2px rgb(0 0 0 / 0.2);
+    // color: #f1f3f5; 
+    font-size: 1.5rem;
+    cursor: pointer
+    `;
 };
 
 // release
@@ -103,26 +69,45 @@ const addHoverStyleDigits = function (element) {
 };
 
 const addDigit = function (input) {
-  // console.log(operationUsed);
-  // if (solved) {
-  //   // console.log("asdasd");
-  //   x = null;
-  // displayText = input;
-  // display.textContent = displayText;
-  // }
+  let output = input;
 
   if (operationUsed) {
-    if (y) input = `${y}${input}`;
+    if (input == "." && pointUsedY) return;
 
-    y = Number(input);
+    if (y) {
+      // if (pointUsedY) {
+      //   output = `.${output}`;
+      //   // pointUsedY = false;
+      // }
 
-    displayText = `${x}${operation}${y}`;
+      output = `${y}${output}`;
+    }
+
+    y = output;
+
+    if (input == ".") pointUsedY = true;
+
+    displayText = `${x}${operation}${output}`;
   } else {
-    if (x) input = `${x}${input}`;
+    if (input == "." && pointUsedX) return;
 
-    x = Number(input);
+    if (x) {
+      // if (x.slice(-1) == 0) {
+      if (x === "0") {
+        if (output == "0") output = "";
+      }
+      // if (pointUsedX) {
+      //   output = `.${output}`;
+      //   // pointUsedX = false;
+      // }
 
-    displayText = x;
+      output = `${x}${output}`;
+    }
+
+    x = output;
+
+    if (input == ".") pointUsedX = true;
+    displayText = output;
   }
 
   display.textContent = displayText;
@@ -163,28 +148,12 @@ digitBtns.forEach((element) =>
 );
 
 operBtns.forEach((element) => {
-  element.el.addEventListener("click", (e) => {
-    // console.log(e.target);
-    // console.log(operBtnsObj[element]);
-    let input = element.value[1];
-    // console.log(input);
+  element.el.addEventListener("click", () => {
+    let input = element.value;
 
     addOperator(input);
   });
 });
-
-// for (const property in operBtnsObj) {
-//   console.log(`${property}: ${operBtnsObj[property]}`);
-// }
-// operBtns.forEach((element) => {
-//   element.addEventListener("click", (e) => {
-//     console.log(e.target);
-//     console.log(operBtnsObj[e.target]);
-//     let input = e.target.textContent;
-
-//     addOperator(input);
-//   });
-// });
 
 equalsBtn.addEventListener("click", () => {
   addEquals();
@@ -262,7 +231,7 @@ document.addEventListener("keyup", function (e) {
 
 const solve = function () {
   // override x
-  let result = operate(x, y, operation);
+  let result = operate(Number(x), Number(y), operation);
 
   displayText = parseFloat(result.toPrecision(8));
   display.textContent = displayText;
@@ -320,4 +289,6 @@ function reset() {
   operation = null;
   operationUsed = false;
   solved = false;
+  pointUsedX = false;
+  pointUsedY = false;
 }
