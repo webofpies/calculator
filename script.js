@@ -10,12 +10,56 @@ let lastElementIsZero = false;
 let solved = false;
 // const operBtns = [".plus", ".minus", ".multiply", ".divide"];
 // const digitBtns = document.querySelectorAll(".digit");
+// const operBtns = [
+//   document.querySelector(".plus"),
+//   document.querySelector(".minus"),
+//   document.querySelector(".multiply"),
+//   document.querySelector(".divide"),
+// ]
+
+// const operBtns = [
+//   plusBtn,
+//   minusBtn,
+//   multiplyBtn,
+//   divideBtn,
+//   percentBtn,
+//   powerBtn,
+// ];
+// const operBtns = [];
+
+// console.log(operBtns);
+
+// const operBtnsObj = {};
+const plusBtn = document.querySelector(".plus");
+const minusBtn = document.querySelector(".minus");
+const multiplyBtn = document.querySelector(".multiply");
+const divideBtn = document.querySelector(".divide");
+const percentBtn = document.querySelector(".percent");
+const powerBtn = document.querySelector(".power");
+// operBtnsObj.plusBtn = "plus";
+// operBtnsObj.minusBtn = "minus";
+// operBtnsObj.multiplyBtn = "multiply";
+// operBtnsObj.divideBtn = "divide";
+// operBtnsObj.percentBtn = "percent";
+// operBtnsObj.powerBtn = "power";
+
 const operBtns = [
-  document.querySelector(".plus"),
-  document.querySelector(".minus"),
-  document.querySelector(".multiply"),
-  document.querySelector(".divide"),
+  { el: plusBtn, value: ["plus", "+"] },
+  { el: minusBtn, value: ["minus", "-"] },
+  { el: multiplyBtn, value: ["multiply", "*"] },
+  { el: divideBtn, value: ["divide", "/"] },
+  { el: percentBtn, value: ["percent", "%"] },
+  { el: powerBtn, value: ["power", "^"] },
 ];
+
+// [minusBtn]: "minus",
+// [multiplyBtn]: "multiply",
+// [divideBtn]: "divide",
+// [percentBtn]: "percent",
+// [powerBtn]: "power",
+
+// console.log(Object.entries(operBtnsObj));
+
 const digitBtns = [
   document.querySelector(".zero"),
   document.querySelector(".one"),
@@ -31,12 +75,14 @@ const digitBtns = [
 const display = document.querySelector(".display-text");
 const equalsBtn = document.querySelector(".equals");
 const clearBtn = document.querySelector(".clear");
-const operSymbolToString = {
-  "+": "plus",
-  "-": "subtract",
-  "*": "multiply",
-  "/": "divide",
-};
+// const operSymbolToString = {
+//   "+": "plus",
+//   "-": "subtract",
+//   "*": "multiply",
+//   "/": "divide",
+//   "%": "percent",
+//   "^": "power",
+// };
 
 // active
 const addActiveStyleDigits = function (element) {
@@ -117,12 +163,28 @@ digitBtns.forEach((element) =>
 );
 
 operBtns.forEach((element) => {
-  element.addEventListener("click", (e) => {
-    let input = e.target.textContent;
+  element.el.addEventListener("click", (e) => {
+    // console.log(e.target);
+    // console.log(operBtnsObj[element]);
+    let input = element.value[1];
+    // console.log(input);
 
     addOperator(input);
   });
 });
+
+// for (const property in operBtnsObj) {
+//   console.log(`${property}: ${operBtnsObj[property]}`);
+// }
+// operBtns.forEach((element) => {
+//   element.addEventListener("click", (e) => {
+//     console.log(e.target);
+//     console.log(operBtnsObj[e.target]);
+//     let input = e.target.textContent;
+
+//     addOperator(input);
+//   });
+// });
 
 equalsBtn.addEventListener("click", () => {
   addEquals();
@@ -200,7 +262,7 @@ document.addEventListener("keyup", function (e) {
 
 const solve = function () {
   // override x
-  let result = operate(x, y, operSymbolToString[operation]);
+  let result = operate(x, y, operation);
 
   displayText = parseFloat(result.toPrecision(8));
   display.textContent = displayText;
@@ -230,13 +292,24 @@ function divide(x, y) {
   else return x / y;
 }
 
+function power(x, y) {
+  if (y == undefined) y = 2;
+  return x ** y;
+}
+
+function percent(x, y) {
+  return x * (y / 100);
+}
+
 function operate(x, y, operation) {
   let result;
 
-  if (operation === "plus") result = add(x, y);
-  else if (operation === "subtract") result = subtract(x, y);
-  else if (operation === "multiply") result = multiply(x, y);
-  else if (operation === "divide") result = divide(x, y);
+  if (operation === "+") result = add(x, y);
+  else if (operation === "-") result = subtract(x, y);
+  else if (operation === "*") result = multiply(x, y);
+  else if (operation === "/") result = divide(x, y);
+  else if (operation === "%") result = percent(x, y);
+  else if (operation === "^") result = power(x, y);
 
   return result;
 }

@@ -30,7 +30,7 @@
 
 .btn-grid-container {
     display: grid;
-    grid-template-columns: repeat(4, 40px);
+    grid-template-columns: repeat(5, 40px);
     gap: 10px;
     margin-top: 20px;
 }
@@ -90,6 +90,15 @@
     color: #f1f3f5;
 }
 
+.btn.equals {
+    background-color: #339af0;
+}
+
+.btn.equals:hover {
+    background-color: #74c0fc;
+    border: 2px solid #339af0;
+}
+
 .display {
     display: grid;
     /* background-color: #e6fcf5; */
@@ -98,7 +107,7 @@
     grid-column: 1 / -1;
     align-content: center;
     justify-content: end;
-    width: 190px;
+    width: 240px;
     overflow: hidden;
     background: linear-gradient(#c4e4d9 0 10%, #f6fffc, #c4e4d9 90% 100%);
     box-shadow: inset 0px 1px 2px 1px rgb(0 0 0 / 0.3);
