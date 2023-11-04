@@ -71,15 +71,20 @@ const addHoverStyleDigits = function (element) {
 const addDigit = function (input) {
   let output = input;
 
+  // add 0 in front of "." if there's no value before it
+  if ((x == null || (operationUsed && y == null)) && input == ".")
+    output = `0${output}`;
+  // if value was zero and we are adding a number, remove that zero (nullify value)
+  if (input != NaN) {
+    if (x == "0") x = null;
+    if (operationUsed && y == "0") y = null;
+  }
+
   if (operationUsed) {
     if (input == "." && pointUsedY) return;
 
     if (y) {
-      // if (pointUsedY) {
-      //   output = `.${output}`;
-      //   // pointUsedY = false;
-      // }
-
+      if (y === "0") if (output == "0") output = "";
       output = `${y}${output}`;
     }
 
@@ -92,14 +97,7 @@ const addDigit = function (input) {
     if (input == "." && pointUsedX) return;
 
     if (x) {
-      // if (x.slice(-1) == 0) {
-      if (x === "0") {
-        if (output == "0") output = "";
-      }
-      // if (pointUsedX) {
-      //   output = `.${output}`;
-      //   // pointUsedX = false;
-      // }
+      if (x === "0") if (output == "0") output = "";
 
       output = `${x}${output}`;
     }
@@ -195,7 +193,7 @@ document.addEventListener("keydown", function (e) {
   const key = e.key;
 
   if (key !== undefined) {
-    if (!isNaN(key)) {
+    if (!isNaN(key) || key == ".") {
       addDigit(key);
     }
     // else if (key === "Backspace")

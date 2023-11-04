@@ -50,18 +50,6 @@ body {
   margin-top: 30px;
 }
 
-/* .btn.digit:hover {
-    background-color: #f8f9fa;
-    border: 2px solid #dee2e6;
-    cursor: pointer;
-} */
-
-/* .btn.digit:active {
-    background-color: #343a40;
-    color: #f1f3f5;
-    cursor: pointer;
-} */
-
 .btn.oper:hover {
   background-color: #868e96;
   border: 2px solid #868e96;
@@ -115,25 +103,15 @@ body {
 }
 
 .display {
-  /* display: inline-block; */
-  /* display: grid; */
-  /* background-color: #e6fcf5; */
-  text-align: right;
+  display: flex;
+  justify-content: flex-end;
   color: #495057;
   width: 24rem;
-  /* width: max-content; */
   height: 4rem;
-  /* grid-column: 1 / -1; */
-  /* align-content: center; */
-  /* justify-content: end; */
   overflow: hidden;
   background: linear-gradient(#c4e4d9 0 10%, #f6fffc, #c4e4d9 90% 100%);
   box-shadow: inset 0px 1px 2px 1px rgb(0 0 0 / 0.3);
 }
-
-/* .display-text {
-  width: 200px;
-} */
 
 .btn,
 .display {
