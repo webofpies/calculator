@@ -2,7 +2,7 @@
 
 let displayText;
 let operation;
-let x;
+let x = 0;
 let y;
 let operationUsed = false;
 let pointUsedX = false;
@@ -45,35 +45,12 @@ const digitBtns = [
   document.querySelector(".point"),
 ];
 
-// active
-const addActiveStyleDigits = function (element) {
-  element.style.cssText = `
-    // background-color: #343a40; 
-    box-shadow: inset 0px 1px 3px 2px rgb(0 0 0 / 0.2);
-    // color: #f1f3f5; 
-    font-size: 1.5rem;
-    cursor: pointer
-    `;
-};
-
-// release
-const addDefaultStyleDigits = function (element) {
-  element.style.cssText =
-    "background-color: #e9ecef; color: #495057; cursor: pointer;";
-};
-
-// hover
-const addHoverStyleDigits = function (element) {
-  element.style.cssText =
-    "background-color: #f8f9fa; border: 2px solid #dee2e6; cursor: pointer;";
-};
-
 const addDigit = function (input) {
   let output = input;
 
   // add 0 in front of "." if there's no value before it
-  if ((x == null || (operationUsed && y == null)) && input == ".")
-    output = `0${output}`;
+  if ((x == "0" || (operationUsed && y == null)) && input == ".") output = `0${output}`;
+
   // if value was zero and we are adding a number, remove that zero (nullify value)
   if (input != NaN) {
     if (x == "0") x = null;
@@ -105,6 +82,7 @@ const addDigit = function (input) {
     x = output;
 
     if (input == ".") pointUsedX = true;
+
     displayText = output;
   }
 
@@ -158,73 +136,9 @@ equalsBtn.addEventListener("click", () => {
 });
 
 clearBtn.addEventListener("click", (e) => {
-  displayText = "";
+  displayText = "0";
   display.textContent = displayText;
   reset();
-});
-
-// mouse click, hover, active - digit buttons
-digitBtns.forEach((element) => {
-  element.addEventListener("mousedown", function () {
-    addActiveStyleDigits(element);
-  });
-});
-
-digitBtns.forEach((element) => {
-  element.addEventListener("mouseup", function () {
-    addDefaultStyleDigits(element);
-  });
-});
-
-digitBtns.forEach((element) => {
-  element.addEventListener("mouseover", function () {
-    addHoverStyleDigits(element);
-  });
-});
-
-digitBtns.forEach((element) => {
-  element.addEventListener("mouseout", function () {
-    addDefaultStyleDigits(element);
-  });
-});
-
-// keyboard clicks
-document.addEventListener("keydown", function (e) {
-  const key = e.key;
-
-  if (key !== undefined) {
-    if (!isNaN(key) || key == ".") {
-      addDigit(key);
-    }
-    // else if (key === "Backspace")
-    else if (key == "+" || key == "-" || key == "*" || key == "/") {
-      addOperator(key);
-    } else if (key == "=" || key == "Enter") solve();
-  }
-});
-
-document.addEventListener("keydown", function (e) {
-  const key = e.key;
-
-  if (key !== undefined) {
-    digitBtns.forEach((element) => {
-      if (key == digitBtns.indexOf(element)) {
-        addActiveStyleDigits(element);
-      }
-    });
-  }
-});
-
-document.addEventListener("keyup", function (e) {
-  const key = e.key;
-
-  if (key !== undefined) {
-    digitBtns.forEach((element) => {
-      if (key == digitBtns.indexOf(element)) {
-        addDefaultStyleDigits(element);
-      }
-    });
-  }
 });
 
 const solve = function () {
@@ -282,7 +196,7 @@ function operate(x, y, operation) {
 }
 
 function reset() {
-  x = null;
+  x = "0";
   y = null;
   operation = null;
   operationUsed = false;
@@ -290,3 +204,89 @@ function reset() {
   pointUsedX = false;
   pointUsedY = false;
 }
+
+// KEYBOARD CLICKS
+document.addEventListener("keydown", function (e) {
+  const key = e.key;
+
+  if (key !== undefined) {
+    if (!isNaN(key) || key == ".") {
+      addDigit(key);
+    }
+    // else if (key === "Backspace")
+    else if (key == "+" || key == "-" || key == "*" || key == "/") {
+      addOperator(key);
+    } else if (key == "=" || key == "Enter") solve();
+  }
+});
+
+document.addEventListener("keydown", function (e) {
+  const key = e.key;
+
+  if (key !== undefined) {
+    digitBtns.forEach((element) => {
+      if (key == digitBtns.indexOf(element)) {
+        addActiveStyleDigits(element);
+      }
+    });
+  }
+});
+
+document.addEventListener("keyup", function (e) {
+  const key = e.key;
+
+  if (key !== undefined) {
+    digitBtns.forEach((element) => {
+      if (key == digitBtns.indexOf(element)) {
+        addDefaultStyleDigits(element);
+      }
+    });
+  }
+});
+
+// mouse click, hover, active - digit buttons FOR STYLES
+digitBtns.forEach((element) => {
+  element.addEventListener("mousedown", function () {
+    addActiveStyleDigits(element);
+  });
+});
+
+digitBtns.forEach((element) => {
+  element.addEventListener("mouseup", function () {
+    addDefaultStyleDigits(element);
+  });
+});
+
+digitBtns.forEach((element) => {
+  element.addEventListener("mouseover", function () {
+    addHoverStyleDigits(element);
+  });
+});
+
+digitBtns.forEach((element) => {
+  element.addEventListener("mouseout", function () {
+    addDefaultStyleDigits(element);
+  });
+});
+
+// STYLES
+// active
+const addActiveStyleDigits = function (element) {
+  element.style.cssText = `
+    // background-color: #343a40; 
+    box-shadow: inset 0px 1px 3px 2px rgb(0 0 0 / 0.2);
+    // color: #f1f3f5; 
+    font-size: 2.5rem;
+    cursor: pointer
+    `;
+};
+
+// release
+const addDefaultStyleDigits = function (element) {
+  element.style.cssText = "background-color: #e9ecef; color: #495057; cursor: pointer;";
+};
+
+// hover
+const addHoverStyleDigits = function (element) {
+  element.style.cssText = "background-color: #f8f9fa; border: 2px solid #dee2e6; cursor: pointer;";
+};
